@@ -9,7 +9,8 @@ def valid_name(name):
     return True
 
 
-path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "src"))
+path = os.path.abspath(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+print(path)
 print("Make sure you do not change the file structure.")
 lang = input("Please enter which language you use {cpp/java/py}:")
 if lang not in ["cpp","java","py","python"]:
@@ -20,10 +21,12 @@ if lang == "cpp":
 elif lang == "java":
     path = os.path.join(path, "checkers-java")
 else:
-    if lang == 'python':
-        lang = "py"
-    path = os.path.join(path, "checkers-python")
+    #if lang == 'python':
+    #    lang = "py"
+    #path = os.path.join(path, "checkers-python")
+    pass
 
+print(path)
 if not os.path.exists(path):
     raise IOError("Src folder does not exist. Make sure you do not change the file structure.")
 
