@@ -34,7 +34,7 @@ class StudentAI():
             board.make_move(move, color)
         return board
 
-    def simulate(self, board, color, allottedtime, tie_counter=40):
+    def simulate(self, board, color, allottedtime):
         """
         Simulates a game based on provided board state and how much time it can run at maximum
         @return : True if win, False if not
@@ -50,8 +50,8 @@ class StudentAI():
             if 0 != board.is_win(color):
                 return self.color == board.is_win(color)
             # will win if
-            if turns_to_tie >= tie_counter:
-                return False
+            if turns_to_tie >= self.board.tie_max:
+                return True
 
             # change color/turn
             if color == self.color:
@@ -86,8 +86,9 @@ class StudentAI():
         2 := simulate game off of move
         3 := backpropagate results
         """
+        explored = False
 
-        while (datetime.now() - starttime < timedelta(seconds=11, milliseconds=900)):
+        while not explored:
             if state == 0:
                 maxknown = -1
                 for childpiece in tree:
@@ -104,23 +105,29 @@ class StudentAI():
                                 currentmove = childmove
                                 maxknown = uct
                 state = 1
-            if state == 1:
+            elif state == 1:
                 moveboard = copy.deepcopy(self.board)  # copy of the board
                 moveboard.make_move(currentmove, self.color)  # update simulation board with chosen move
                 if self.color == moveboard.is_win(self.color):
                     self.board.make_move(currentmove, self.color)
                     return currentmove
                 state = 2
-            if state == 2:
+            elif state == 2:
                 result = self.simulate(moveboard, self.opponent[self.color],
-                                       timedelta(seconds=11, milliseconds=900) - (datetime.now() - starttime),
-                                       tie_counter=40)  # simulate game off of focus move
+                                       timedelta(seconds=9, milliseconds=900) - (datetime.now() - starttime))  # simulate game off of focus move
                 state = 3
             elif state == 3:
                 if result:
                     resultdict[currentmove][0] += 1
                 resultdict[currentmove][1] += 1
                 parenttotal += 1
+                # If a move has 95% win rate, just make it
+                if (resultdict[currentmove][1] >= 50 and ((resultdict[currentmove][0]/resultdict[currentmove][1]) > 0.95)):
+                    explored = True
+                    
+                # If every node's been explored around 100 times, just make the move
+                if (parenttotal/len(tree) >= 200):
+                    explored = True
                 state = 0
             else:
                 state = 0
