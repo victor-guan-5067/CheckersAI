@@ -88,7 +88,7 @@ if __name__ == "__main__":
 
             main = GameLogic(col, row, k, 'n', debug=True)
             try:
-                main.Run(mode=host_flag, ai_path=ai_path, info=response, time=1200)
+                main.Run(mode=host_flag, ai_path=ai_path, info=response, time=480)
             except:
                 import traceback
                 traceback.print_exc()

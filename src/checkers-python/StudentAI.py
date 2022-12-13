@@ -121,12 +121,9 @@ class StudentAI():
                     resultdict[currentmove][0] += 1
                 resultdict[currentmove][1] += 1
                 parenttotal += 1
-                # If a move has 95% win rate, just make it
-                if (resultdict[currentmove][1] >= 50 and ((resultdict[currentmove][0]/resultdict[currentmove][1]) > 0.95)):
-                    explored = True
                     
-                # If every node's been explored around 100 times, just make the move
-                if (parenttotal/len(tree) >= 200):
+                # If every move's been explored around 100 times, just make the move
+                if (parenttotal/len(tree) >= 100):
                     explored = True
                 state = 0
             else:
